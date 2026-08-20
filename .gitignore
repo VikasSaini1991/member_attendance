@@ -47,6 +47,9 @@ app.*.map.json
 # Environment variables
 .env*
 
+# Artifacts
+.artifacts/
+
 # Keystore files
 *.jks
 *.keystore
