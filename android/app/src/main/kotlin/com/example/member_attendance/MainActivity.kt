@@ -1,0 +1,5 @@
+package com.example.member_attendance
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
