@@ -1,7 +1,8 @@
-- [ ] Update GitHub Actions workflow (`flutter_ci.yml`)
-    - [ ] Update action versions
-    - [ ] Add caching for Flutter and Gradle
-    - [ ] Refine build and distribution steps
-- [ ] Create `CICD_SETUP.md` for future reference and documentation
-- [ ] Verify workflow configuration
-- [ ] Push changes to GitHub (if requested/possible)
+- [x] Update GitHub Actions workflow (`flutter_ci.yml`)
+    - [x] Update action versions
+    - [x] Add caching for Flutter and Gradle
+    - [x] Refine build and distribution steps
+- [x] Create `CICD_SETUP.md` for future reference and documentation
+- [x] Verify workflow configuration
+- [x] Push changes to GitHub
+- [x] Fix `w9jds/firebase-action` version error

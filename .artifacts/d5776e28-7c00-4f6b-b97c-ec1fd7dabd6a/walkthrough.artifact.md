@@ -8,7 +8,7 @@ I have refined the CI/CD pipeline for your Flutter project and provided a compre
 - **Updated `flutter_ci.yml`**:
     - Added **Gradle caching** to speed up Android builds.
     - Optimized **Flutter caching** configuration.
-    - Updated `w9jds/firebase-action` to `v2`.
+    - Fixed `w9jds/firebase-action` version (reverted to `@master` as `@v2` was not found).
     - Added `--build-number=${{ github.run_number }}` to `flutter build apk` to ensure each build has a unique version code for Firebase App Distribution.
     - Cleaned up the keystore decoding step.
 
