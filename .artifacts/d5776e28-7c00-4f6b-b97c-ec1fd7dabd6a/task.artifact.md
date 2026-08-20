@@ -1,0 +1,7 @@
+- [ ] Update GitHub Actions workflow (`flutter_ci.yml`)
+    - [ ] Update action versions
+    - [ ] Add caching for Flutter and Gradle
+    - [ ] Refine build and distribution steps
+- [ ] Create `CICD_SETUP.md` for future reference and documentation
+- [ ] Verify workflow configuration
+- [ ] Push changes to GitHub (if requested/possible)
