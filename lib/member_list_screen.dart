@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'attendance_controller.dart';
 
 class MemberListScreen extends StatelessWidget {
-  MemberListScreen({Key? key}) : super(key: key);
+  MemberListScreen({super.key});
 
   final AttendanceController controller = Get.put(AttendanceController());
 

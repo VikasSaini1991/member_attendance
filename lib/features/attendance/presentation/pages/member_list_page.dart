@@ -10,7 +10,7 @@ import '../widgets/mp_list_tile.dart';
 import '../widgets/otp_dialog.dart';
 
 class MemberListPage extends StatelessWidget {
-  const MemberListPage({Key? key}) : super(key: key);
+  const MemberListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

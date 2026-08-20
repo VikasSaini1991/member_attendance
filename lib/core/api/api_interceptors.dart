@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiInterceptors extends Interceptor {
   @override
@@ -7,19 +8,19 @@ class ApiInterceptors extends Interceptor {
     options.headers['Content-Type'] = 'application/json';
     options.headers['Accept'] = 'application/json';
     
-    print('REQUEST[${options.method}] => PATH: ${options.path}');
+    debugPrint('REQUEST[${options.method}] => PATH: ${options.path}');
     return super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+    debugPrint('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
     return super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    print('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+    debugPrint('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
     return super.onError(err, handler);
   }
 }

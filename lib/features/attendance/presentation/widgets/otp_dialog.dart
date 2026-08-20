@@ -5,7 +5,7 @@ class OtpDialog extends StatefulWidget {
   final MpEntity mp;
   final Function(String) onVerify;
 
-  const OtpDialog({Key? key, required this.mp, required this.onVerify}) : super(key: key);
+  const OtpDialog({super.key, required this.mp, required this.onVerify});
 
   @override
   State<OtpDialog> createState() => _OtpDialogState();

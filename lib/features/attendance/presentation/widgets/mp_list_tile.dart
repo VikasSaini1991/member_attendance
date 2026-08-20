@@ -6,10 +6,10 @@ class MpListTile extends StatelessWidget {
   final VoidCallback onSendOtp;
 
   const MpListTile({
-    Key? key,
+    super.key,
     required this.mp,
     required this.onSendOtp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
