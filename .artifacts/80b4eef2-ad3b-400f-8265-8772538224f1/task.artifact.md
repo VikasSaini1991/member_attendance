@@ -1,12 +1,14 @@
-# CI/CD Setup Tasks
+# Firebase Integration Tasks
 
-- [x] **Phase 1: Preparation (Manual Steps)**
-    - [x] Provide Keystore generation command
-    - [x] Provide Firebase setup instructions
-- [x] **Phase 2: Project Configuration**
-    - [x] Update `.gitignore` to protect sensitive files
-    - [x] Configure `android/app/build.gradle.kts` for release signing
-- [x] **Phase 3: GitHub Actions Setup**
-    - [x] Create `.github/workflows/flutter_ci.yml`
-- [x] **Phase 4: Documentation**
-    - [x] Provide list of GitHub Secrets to be added by the user
+- [ ] **Phase 1: Firebase Project Creation (Manual)**
+    - [ ] Create project in Firebase Console
+    - [ ] Register Android app (`com.example.member_attendance`)
+    - [ ] Download `google-services.json`
+- [x] **Phase 2: Flutter Project Configuration**
+    - [x] Add `firebase_core` to `pubspec.yaml`
+    - [x] Configure `android/build.gradle.kts` (Project-level)
+    - [x] Configure `android/app/build.gradle.kts` (App-level)
+- [x] **Phase 3: Code Implementation**
+    - [x] Initialize Firebase in `lib/main.dart`
+- [ ] **Phase 4: Deployment Update**
+    - [ ] Update CI/CD to handle Firebase configuration (if needed)

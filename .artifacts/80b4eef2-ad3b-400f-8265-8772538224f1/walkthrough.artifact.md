@@ -1,60 +1,38 @@
-# CI/CD Setup Walkthrough
+# Firebase Setup Walkthrough
 
-I have completed the technical setup for your CI/CD pipeline. To make it operational, you need to perform a few manual steps to generate your keystore and set up your Firebase project.
+I have prepared the code for Firebase integration. To complete the setup, you must manually create the project in the Firebase Console because it requires your personal login.
 
 ## Changes Made
 
-### 1. Security & Hygiene
-- Updated [.gitignore](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.gitignore) to ensure keystores, service account keys, and `.env` files are never committed to your repository.
+### 1. Flutter Configuration
+- Added `firebase_core` to [pubspec.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/pubspec.yaml).
+- Initialized Firebase in [main.dart](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/lib/main.dart).
 
-### 2. Android Build Configuration
-- Modified [build.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/app/build.gradle.kts) to support secure signing during the CI process. It now looks for environment variables provided by GitHub Actions to sign the release APK.
-
-### 3. CI/CD Pipeline
-- Created [.github/workflows/flutter_ci.yml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.github/workflows/flutter_ci.yml) which automates:
-    - Code analysis (`flutter analyze`)
-    - Unit testing (`flutter test`)
-    - Release APK building
-    - Automatic deployment to Firebase App Distribution on pushes to `main` or `develop`.
+### 2. Android Native Configuration
+- Updated [android/build.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/build.gradle.kts) to include the Google Services plugin.
+- Applied the Google Services plugin in [android/app/build.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/app/build.gradle.kts).
 
 ---
 
-## Action Items for You
+## Action Items for You (Firebase Console)
 
-### Step 1: Generate your Keystore
-Run this command in your terminal (at the root of your project) to generate your release keystore:
+### Step 1: Create the Firebase Project
+1. Go to the [Firebase Console](https://console.firebase.google.com/).
+2. Click **Add project** and name it `member-attendance`.
+3. Disable or enable Google Analytics as you prefer.
 
-```powershell
-keytool -genkey -v -keystore android/app/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-```
+### Step 2: Register the Android App
+1. Inside your new project, click the **Android icon** to add an app.
+2. **Android package name**: `com.example.member_attendance` (This must match exactly).
+3. **App nickname**: `Member Attendance Android`.
+4. Click **Register app**.
+
+### Step 3: Download and Place the Config File
+1. Download the `google-services.json` file.
+2. Move it into your project folder at: `android/app/google-services.json`.
+
 > [!IMPORTANT]
-> Keep track of the **Keystore Password**, **Key Alias**, and **Key Password** you choose. You will need them for Step 3.
+> The app will **fail to build** until you place the `google-services.json` file in the correct directory.
 
-### Step 2: Firebase Setup
-1.  **Create Project**: Go to [Firebase Console](https://console.firebase.google.com/) and create a project.
-2.  **Add Android App**: Use package name `com.example.member_attendance`.
-3.  **App Distribution**:
-    - Enable "App Distribution" in the sidebar.
-    - Create a group called `internal-testers` and add your email.
-4.  **Service Account**:
-    - Go to [GCP Console Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts).
-    - Create a Service Account with the **Firebase App Distribution Admin** role.
-    - Create a **JSON Key** for this account and download it.
-
-### Step 3: Add GitHub Secrets
-Go to your GitHub repository > **Settings** > **Secrets and variables** > **Actions** and add the following:
-
-| Secret Name | Description |
-| :--- | :--- |
-| `ENV_FILE_CONTENT` | The entire content of your `.env` file. |
-| `KEYSTORE_BASE64` | The content of `upload-keystore.jks` encoded in Base64 (see tip below). |
-| `KEYSTORE_PASSWORD` | The password you set for the keystore. |
-| `KEY_ALIAS` | The alias you set (e.g., `upload`). |
-| `KEY_PASSWORD` | The password you set for the key. |
-| `FIREBASE_APP_ID` | Found in Firebase Project Settings > General. |
-| `CREDENTIAL_FILE_CONTENT` | The entire content of the Service Account JSON key. |
-
-> [!TIP]
-> To get the Base64 string of your keystore:
-> **Windows (PowerShell):** `[Convert]::ToBase64String([IO.File]::ReadAllBytes("android/app/upload-keystore.jks")) | clip`
-> **macOS/Linux:** `base64 -i android/app/upload-keystore.jks | pbcopy`
+### Step 4: Finalize
+Once the file is in place, you can run `flutter run` or push to GitHub to trigger the CI/CD pipeline.

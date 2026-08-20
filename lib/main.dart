@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'core/config/app_config.dart';
 import 'core/config/env_config.dart';
 import 'core/theme/app_theme.dart';
@@ -12,6 +13,7 @@ import 'injection_container.dart' as di;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   
   // Load environment configuration
   // You can change this to .staging or .prod as needed
