@@ -16,26 +16,37 @@ workflows:
     scripts:
       - name: Set up .env file
         script: |
+          echo "Setting up assets/env..."
           if [ -z "$ENV_FILE_CONTENT" ]; then 
-            echo "Error: ENV_FILE_CONTENT is empty or group is not loaded"
+            echo "Error: ENV_FILE_CONTENT is empty or group 'firebase_credentials' is not loaded in Codemagic UI."
             exit 1
           fi
           mkdir -p assets
-          printf "%s\n" "$ENV_FILE_CONTENT" > assets/env
-          echo "Verifying assets/env content:"
-          cat assets/env
+          printf -- "%s\n" "$ENV_FILE_CONTENT" > assets/env
+          echo "Verifying assets/env:"
+          ls -la assets/env
+          echo "File size: $(wc -c < assets/env) bytes"
+          # cat assets/env # Uncomment only for temporary debugging of secret content
 
       - name: Set up Keystore
         script: |
-          if [ -n "$KEYSTORE_BASE64" ]; then
-            printf "%s" "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
+          echo "Setting up keystore..."
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Error: KEYSTORE_BASE64 is empty. Ensure 'android_signing' group is loaded."
+            exit 1
           fi
+          printf -- "%s" "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
+          ls -la /tmp/upload-keystore.jks
 
       - name: Set up Google Service Account
         script: |
-          if [ -n "$CREDENTIAL_FILE_CONTENT" ]; then
-            printf "%s" "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
+          echo "Setting up Google Service Account..."
+          if [ -z "$CREDENTIAL_FILE_CONTENT" ]; then
+            echo "Error: CREDENTIAL_FILE_CONTENT is empty. Ensure 'firebase_credentials' group is loaded."
+            exit 1
           fi
+          printf -- "%s" "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
+          ls -la /tmp/firebase_credentials.json
 
       - name: Get Flutter packages
         script: |
