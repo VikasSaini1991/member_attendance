@@ -8,14 +8,6 @@ workflows:
         - firebase_credentials
         - android_signing
       vars:
-        # These should be defined in Codemagic environment variables
-        # FIREBASE_APP_ID: ...
-        # ENV_FILE_CONTENT: ...
-        # KEYSTORE_BASE64: ...
-        # KEYSTORE_PASSWORD: ...
-        # KEY_ALIAS: ...
-        # KEY_PASSWORD: ...
-        # CREDENTIAL_FILE_CONTENT: ... (Service Account JSON)
         PACKAGE_NAME: "com.example.member_attendance"
       flutter: stable
       xcode: latest
@@ -24,18 +16,26 @@ workflows:
     scripts:
       - name: Set up .env file
         script: |
-          if [ -z "$ENV_FILE_CONTENT" ]; then echo "Error: ENV_FILE_CONTENT is empty"; exit 1; fi
+          if [ -z "$ENV_FILE_CONTENT" ]; then 
+            echo "Error: ENV_FILE_CONTENT is empty or group is not loaded"
+            exit 1
+          fi
           mkdir -p assets
-          printf "%s" "$ENV_FILE_CONTENT" > assets/env
-          ls -la assets/
+          printf "%s\n" "$ENV_FILE_CONTENT" > assets/env
+          echo "Verifying assets/env content:"
+          cat assets/env
 
       - name: Set up Keystore
         script: |
-          printf "%s" "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            printf "%s" "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
+          fi
 
       - name: Set up Google Service Account
         script: |
-          printf "%s" "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
+          if [ -n "$CREDENTIAL_FILE_CONTENT" ]; then
+            printf "%s" "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
+          fi
 
       - name: Get Flutter packages
         script: |
@@ -56,7 +56,6 @@ workflows:
             --build-number=$BUILD_NUMBER
         environment:
           KEYSTORE_PATH: "/tmp/upload-keystore.jks"
-          # KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD are expected to be in environment
 
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
