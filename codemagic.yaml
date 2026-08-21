@@ -24,15 +24,15 @@ workflows:
     scripts:
       - name: Set up .env file
         script: |
-          echo "$ENV_FILE_CONTENT" > .env
+          printf "%s" "$ENV_FILE_CONTENT" > .env
 
       - name: Set up Keystore
         script: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
+          printf "%s" "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
 
       - name: Set up Google Service Account
         script: |
-          echo "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
+          printf "%s" "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
 
       - name: Get Flutter packages
         script: |
