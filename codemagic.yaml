@@ -1,0 +1,66 @@
+workflows:
+  android-workflow:
+    name: Android Workflow
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - firebase_credentials
+        - android_signing
+      vars:
+        # These should be defined in Codemagic environment variables
+        # FIREBASE_APP_ID: ...
+        # ENV_FILE_CONTENT: ...
+        # KEYSTORE_BASE64: ...
+        # KEYSTORE_PASSWORD: ...
+        # KEY_ALIAS: ...
+        # KEY_PASSWORD: ...
+        # CREDENTIAL_FILE_CONTENT: ... (Service Account JSON)
+        PACKAGE_NAME: "com.example.member_attendance"
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      - name: Set up .env file
+        script: |
+          echo "$ENV_FILE_CONTENT" > .env
+
+      - name: Set up Keystore
+        script: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
+
+      - name: Set up Google Service Account
+        script: |
+          echo "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
+
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+
+      - name: Flutter unit tests
+        script: |
+          flutter test
+
+      - name: Build Android APK
+        script: |
+          flutter build apk --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER
+        environment:
+          KEYSTORE_PATH: "/tmp/upload-keystore.jks"
+          # KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD are expected to be in environment
+
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+
+    publishing:
+      firebase_app_distribution:
+        app_id: $FIREBASE_APP_ID
+        service_account_credentials: $CREDENTIAL_FILE_CONTENT
+        groups:
+          - internal-testers
