@@ -24,7 +24,8 @@ workflows:
     scripts:
       - name: Set up .env file
         script: |
-          printf "%s" "$ENV_FILE_CONTENT" > .env
+          if [ -z "$ENV_FILE_CONTENT" ]; then echo "Error: ENV_FILE_CONTENT is empty"; exit 1; fi
+          printf "%s" "$ENV_FILE_CONTENT" > assets/env
 
       - name: Set up Keystore
         script: |

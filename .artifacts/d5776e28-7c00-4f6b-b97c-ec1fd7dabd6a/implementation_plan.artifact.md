@@ -1,40 +1,46 @@
-# Implementation Plan - CI/CD Integration with Firebase App Distribution
+# Implementation Plan - Fix CI Asset Bundling Issue
 
-This plan outlines the steps to refine and finalize the CI/CD pipeline for the Flutter project, ensuring smooth integration with GitHub Actions and Firebase App Distribution.
+This plan addresses the build failure `No file or variants found for asset: .env` by moving the environment configuration file to a more robust location and updating the project configuration.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> The CI/CD pipeline requires several secrets to be manually added to the GitHub repository settings. This plan includes a detailed list of these secrets.
+> I am moving your `.env` file into the `assets/` directory and renaming it to `env` (without the leading dot).
+> - **Reason**: Dotfiles (files starting with `.`) are often ignored or hidden by build tools and operating systems (like the macOS runners used by Codemagic). Moving the file to a standard subdirectory ensures it is always bundled correctly.
 >
-> [!NOTE]
-> The current workflow already exists but will be refined for better performance, security, and maintainability.
+> [!WARNING]
+> After this change, you must ensure that your local `.env` is moved to `assets/env`. I will handle the file move in this plan, but don't forget to update any local backups you might have.
 
 ## Proposed Changes
 
-### CI/CD Workflow Refinement
+### Project Structure & Configuration
+
+#### [MODIFY] [pubspec.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/pubspec.yaml)
+- Update the assets section:
+  - Remove `- .env`
+  - Add `- assets/env`
+
+#### [MODIFY] [app_config.dart](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/lib/core/config/app_config.dart)
+- Update the `initialize` method to use the new paths:
+  - `AppEnvironment.dev` -> `assets/env`
+  - `AppEnvironment.staging` -> `assets/env_staging`
+  - `AppEnvironment.prod` -> `assets/env_prod`
+
+### CI/CD Workflows
 
 #### [MODIFY] [flutter_ci.yml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.github/workflows/flutter_ci.yml)
-- Update action versions to the latest stable ones.
-- Add caching for Flutter dependencies and Gradle to reduce build time.
-- Standardize the build process for APK and optionally AAB.
-- Improve the Firebase App Distribution step with better error handling or more standard actions.
-- Add a job to create a GitHub Release when a tag is pushed.
+- Update the "Create .env file" step to write to `assets/env` instead of `.env`.
 
-### Documentation & Setup Guide
-
-#### [NEW] [CICD_SETUP.md](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/CICD_SETUP.md)
-- Create a comprehensive guide for the user to set up:
-    - GitHub Secrets (Keystore, Firebase credentials, etc.)
-    - Firebase App Distribution (Groups, App ID)
-    - Google Cloud Service Account for deployment.
+#### [MODIFY] [codemagic.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/codemagic.yaml)
+- Update the "Set up .env file" script:
+  - Target path: `assets/env`
+  - Add a check to fail the build with a clear error message if `$ENV_FILE_CONTENT` is empty.
 
 ## Verification Plan
 
 ### Automated Tests
-- The workflow itself will be verified by GitHub Actions once pushed.
-- I will run `flutter analyze` and `flutter test` locally to ensure the codebase is currently green.
+- Run `flutter analyze` locally to ensure the code remains valid.
+- Verify the build succeeds on GitHub Actions.
 
 ### Manual Verification
-- Review the `flutter_ci.yml` syntax.
-- Verify the build command matches the `build.gradle.kts` configuration.
+- You should run the app locally to ensure the configuration is still loaded correctly from `assets/env`.
