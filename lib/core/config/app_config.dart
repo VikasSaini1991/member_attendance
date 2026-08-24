@@ -14,13 +14,13 @@ class AppConfig {
     String fileName;
     switch (environment) {
       case AppEnvironment.dev:
-        fileName = 'assets/env';
+        fileName = 'assets/app.env';
         break;
       case AppEnvironment.staging:
-        fileName = 'assets/env_staging';
+        fileName = 'assets/app_staging.env';
         break;
       case AppEnvironment.prod:
-        fileName = 'assets/env_prod';
+        fileName = 'assets/app_prod.env';
         break;
     }
 

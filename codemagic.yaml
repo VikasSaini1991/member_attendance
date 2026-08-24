@@ -16,17 +16,17 @@ workflows:
     scripts:
       - name: Set up .env file
         script: |
-          echo "Setting up assets/env..."
+          echo "Setting up assets/app.env..."
           if [ -z "$ENV_FILE_CONTENT" ]; then 
             echo "Error: ENV_FILE_CONTENT is empty or group 'firebase_credentials' is not loaded in Codemagic UI."
             exit 1
           fi
           mkdir -p assets
-          printf -- "%s\n" "$ENV_FILE_CONTENT" > assets/env
-          echo "Verifying assets/env:"
-          ls -la assets/env
-          echo "File size: $(wc -c < assets/env) bytes"
-          # cat assets/env # Uncomment only for temporary debugging of secret content
+          printf -- "%s\n" "$ENV_FILE_CONTENT" > assets/app.env
+          echo "Verifying assets/app.env:"
+          ls -la assets/app.env
+          echo "File size: $(wc -c < assets/app.env) bytes"
+          # cat assets/app.env # Uncomment only for temporary debugging of secret content
 
       - name: Set up Keystore
         script: |

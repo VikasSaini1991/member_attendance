@@ -4,11 +4,8 @@
 - [x] Modernize Android Build Versions (Iteration 2)
 - [x] Integrate Codemagic CI/CD
 - [x] Generate Android Upload Keystore
-- [x] Fix CI Build Failure (Missing .env Asset - Iteration 1)
-- [x] Fix CI Build Failure (Robust Asset Bundling - Iteration 2)
-    - [x] Move `.env` to `assets/env`
-    - [x] Update `pubspec.yaml`
-    - [x] Update `app_config.dart`
-    - [x] Update `flutter_ci.yml`
-    - [x] Update `codemagic.yaml`
+- [x] Fix Persistent Asset Bundling Issue (Iteration 3)
+- [x] Fix Codemagic .env Setup (Iteration 4)
+    - [x] Update `codemagic.yaml` with robust .env script
     - [x] Push changes to GitHub
+    - [x] Update `walkthrough.artifact.md`

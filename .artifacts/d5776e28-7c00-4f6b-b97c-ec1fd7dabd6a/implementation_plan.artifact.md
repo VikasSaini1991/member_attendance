@@ -1,46 +1,31 @@
-# Implementation Plan - Fix CI Asset Bundling Issue
+# Implementation Plan - Fix Codemagic .env Setup
 
-This plan addresses the build failure `No file or variants found for asset: .env` by moving the environment configuration file to a more robust location and updating the project configuration.
+This plan addresses the issue with the `.env` file setup in the Codemagic workflow, providing more robust script execution and diagnostic logging.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> I am moving your `.env` file into the `assets/` directory and renaming it to `env` (without the leading dot).
-> - **Reason**: Dotfiles (files starting with `.`) are often ignored or hidden by build tools and operating systems (like the macOS runners used by Codemagic). Moving the file to a standard subdirectory ensures it is always bundled correctly.
+> **Codemagic UI Check**: Please ensure that the variable `ENV_FILE_CONTENT` is explicitly assigned to the **`firebase_credentials`** group in the Codemagic "Environment variables" settings. If it is not in that group, the workflow will not load it.
 >
 > [!WARNING]
-> After this change, you must ensure that your local `.env` is moved to `assets/env`. I will handle the file move in this plan, but don't forget to update any local backups you might have.
+> The `cat assets/env` command will print your secrets to the build logs. This is helpful for debugging but you should remove it once the build is successful to keep your API keys private.
 
 ## Proposed Changes
 
-### Project Structure & Configuration
-
-#### [MODIFY] [pubspec.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/pubspec.yaml)
-- Update the assets section:
-  - Remove `- .env`
-  - Add `- assets/env`
-
-#### [MODIFY] [app_config.dart](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/lib/core/config/app_config.dart)
-- Update the `initialize` method to use the new paths:
-  - `AppEnvironment.dev` -> `assets/env`
-  - `AppEnvironment.staging` -> `assets/env_staging`
-  - `AppEnvironment.prod` -> `assets/env_prod`
-
-### CI/CD Workflows
-
-#### [MODIFY] [flutter_ci.yml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.github/workflows/flutter_ci.yml)
-- Update the "Create .env file" step to write to `assets/env` instead of `.env`.
+### Codemagic Configuration
 
 #### [MODIFY] [codemagic.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/codemagic.yaml)
-- Update the "Set up .env file" script:
-  - Target path: `assets/env`
-  - Add a check to fail the build with a clear error message if `$ENV_FILE_CONTENT` is empty.
+- Refine the `.env` setup script for maximum robustness:
+    - Use `printf -- "%s"` to handle content starting with hyphens.
+    - Add explicit validation for the variable existence.
+    - Add file size checking to confirm data was written.
+    - Improve error messages to guide the user to the Codemagic UI.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `flutter analyze` locally to ensure the code remains valid.
-- Verify the build succeeds on GitHub Actions.
+- I will check the YAML syntax for validity.
 
 ### Manual Verification
-- You should run the app locally to ensure the configuration is still loaded correctly from `assets/env`.
+- You will need to check the Codemagic build logs to see the output of the new diagnostic steps.
+- If the logs show "Error: ENV_FILE_CONTENT is empty", it confirms a configuration issue in the Codemagic UI.
