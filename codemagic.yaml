@@ -14,54 +14,42 @@ workflows:
       cocoapods: default
 
     scripts:
-      - name: Set up .env file
+      - name: Set up environment and build
         script: |
-          echo "Setting up assets/app.env..."
+          echo "Current working directory: $(pwd)"
+          
+          # 1. Set up .env file
+          echo "Setting up assets/app_config.properties..."
           if [ -z "$ENV_FILE_CONTENT" ]; then 
-            echo "Error: ENV_FILE_CONTENT is empty or group 'firebase_credentials' is not loaded in Codemagic UI."
+            echo "Error: ENV_FILE_CONTENT is empty. Ensure 'firebase_credentials' group is associated with this workflow."
             exit 1
           fi
           mkdir -p assets
-          printf -- "%s\n" "$ENV_FILE_CONTENT" > assets/app.env
-          echo "Verifying assets/app.env:"
-          ls -la assets/app.env
-          echo "File size: $(wc -c < assets/app.env) bytes"
-          # cat assets/app.env # Uncomment only for temporary debugging of secret content
-
-      - name: Set up Keystore
-        script: |
+          printf -- "%s\n" "$ENV_FILE_CONTENT" > assets/app_config.properties
+          ls -la assets/app_config.properties
+          
+          # 2. Set up Keystore
           echo "Setting up keystore..."
           if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "Error: KEYSTORE_BASE64 is empty. Ensure 'android_signing' group is loaded."
+            echo "Error: KEYSTORE_BASE64 is empty. Ensure 'android_signing' group is associated."
             exit 1
           fi
           printf -- "%s" "$KEYSTORE_BASE64" | base64 --decode > /tmp/upload-keystore.jks
           ls -la /tmp/upload-keystore.jks
 
-      - name: Set up Google Service Account
-        script: |
+          # 3. Set up Google Service Account
           echo "Setting up Google Service Account..."
           if [ -z "$CREDENTIAL_FILE_CONTENT" ]; then
-            echo "Error: CREDENTIAL_FILE_CONTENT is empty. Ensure 'firebase_credentials' group is loaded."
+            echo "Error: CREDENTIAL_FILE_CONTENT is empty. Ensure 'firebase_credentials' group is associated."
             exit 1
           fi
           printf -- "%s" "$CREDENTIAL_FILE_CONTENT" > /tmp/firebase_credentials.json
           ls -la /tmp/firebase_credentials.json
 
-      - name: Get Flutter packages
-        script: |
+          # 4. Flutter Build
           flutter pub get
-
-      - name: Flutter analyze
-        script: |
           flutter analyze
-
-      - name: Flutter unit tests
-        script: |
           flutter test
-
-      - name: Build Android APK
-        script: |
           flutter build apk --release \
             --build-name=1.0.$BUILD_NUMBER \
             --build-number=$BUILD_NUMBER

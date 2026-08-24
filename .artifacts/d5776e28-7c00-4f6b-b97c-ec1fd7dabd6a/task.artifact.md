@@ -6,6 +6,12 @@
 - [x] Generate Android Upload Keystore
 - [x] Fix Persistent Asset Bundling Issue (Iteration 3)
 - [x] Fix Codemagic .env Setup (Iteration 4)
-    - [x] Update `codemagic.yaml` with robust .env script
-    - [x] Push changes to GitHub
-    - [x] Update `walkthrough.artifact.md`
+- [x] Final CI/CD Fixes (Iteration 5)
+- [/] Standardize Configuration Asset (Iteration 6)
+    - [ ] Rename `assets/app.env` to `assets/app_config.properties`
+    - [ ] Update `pubspec.yaml`
+    - [ ] Update `lib/core/config/app_config.dart`
+    - [ ] Update `.github/workflows/flutter_ci.yml`
+    - [ ] Update `codemagic.yaml`
+    - [ ] Update `.gitignore`
+    - [ ] Push changes to GitHub
