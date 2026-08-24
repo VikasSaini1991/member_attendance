@@ -7,11 +7,11 @@
 - [x] Fix Persistent Asset Bundling Issue (Iteration 3)
 - [x] Fix Codemagic .env Setup (Iteration 4)
 - [x] Final CI/CD Fixes (Iteration 5)
-- [/] Standardize Configuration Asset (Iteration 6)
-    - [ ] Rename `assets/app.env` to `assets/app_config.properties`
-    - [ ] Update `pubspec.yaml`
-    - [ ] Update `lib/core/config/app_config.dart`
-    - [ ] Update `.github/workflows/flutter_ci.yml`
+- [x] Standardize Configuration Asset (Iteration 6)
+- [/] Permanent Fix for Asset Bundling & Kotlin (Iteration 7)
+    - [ ] Remove `assets/app_config.properties` from `.gitignore`
+    - [ ] Create placeholder `assets/app_config.properties`
+    - [ ] Upgrade Kotlin to 2.3.20 in `settings.gradle.kts`
+    - [ ] Update `flutter_ci.yml`
     - [ ] Update `codemagic.yaml`
-    - [ ] Update `.gitignore`
     - [ ] Push changes to GitHub

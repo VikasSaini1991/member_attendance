@@ -47,7 +47,6 @@ app.*.map.json
 # Environment variables
 .env*
 assets/app.env
-assets/app_config.properties
 
 # Artifacts
 .artifacts/

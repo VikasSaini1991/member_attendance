@@ -31,9 +31,8 @@ jobs:
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
           cache-path: "${{ runner.tool_cache }}/flutter"
 
-      - name: Create .env file
+      - name: Create .env file (Overwrite placeholder)
         run: |
-          mkdir -p assets
           echo "${{ secrets.ENV_FILE_CONTENT }}" > assets/app_config.properties
           ls -la assets/
 

@@ -18,15 +18,15 @@ workflows:
         script: |
           echo "Current working directory: $(pwd)"
           
-          # 1. Set up .env file
+          # 1. Overwrite app_config.properties placeholder
           echo "Setting up assets/app_config.properties..."
           if [ -z "$ENV_FILE_CONTENT" ]; then 
             echo "Error: ENV_FILE_CONTENT is empty. Ensure 'firebase_credentials' group is associated with this workflow."
             exit 1
           fi
-          mkdir -p assets
           printf -- "%s\n" "$ENV_FILE_CONTENT" > assets/app_config.properties
           ls -la assets/app_config.properties
+          echo "File size: $(wc -c < assets/app_config.properties) bytes"
           
           # 2. Set up Keystore
           echo "Setting up keystore..."
