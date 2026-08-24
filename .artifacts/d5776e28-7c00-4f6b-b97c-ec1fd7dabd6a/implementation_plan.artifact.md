@@ -1,55 +1,40 @@
-# Implementation Plan - Definitive CI/CD Pipeline Fix (Recovery)
+# Implementation Plan - Fix AGP 9.1 & Kotlin 2.3 Script Compilation Errors
 
-This plan re-establishes the stable CI/CD configuration that was previously lost. It ensures asset bundling succeeds by using a tracked placeholder and upgrades the toolchain to meet Flutter's latest requirements.
+This plan addresses the script compilation errors in `build.gradle.kts` caused by the upgrade to Android Gradle Plugin (AGP) 9.1.0 and Kotlin 2.3.20. It aligns the project with the new "Built-in Kotlin" standards and resolves DSL deprecations.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Asset Strategy**: I am committing a placeholder file `assets/app_config.properties`. This ensures the path exists for Flutter's asset bundler. CI will overwrite this with your real secrets.
+> **Built-in Kotlin**: I am finalizing the migration to Built-in Kotlin by removing the explicit Kotlin plugin from `settings.gradle.kts` and using the new `compilerOptions` pattern.
 >
-> [!CAUTION]
-> **Toolchain Upgrade**: Upgrading to **Kotlin 2.3.20** and **Java 17** is required to resolve recent build warnings and errors with the Android Gradle Plugin 9.1.0.
+> [!WARNING]
+> **DSL Strictness**: AGP 9.0+ is more strict with its DSL. I will resolve the deprecation errors in `app/build.gradle.kts` to satisfy the Kotlin script compiler.
 
 ## Proposed Changes
 
-### 1. Robust Asset Bundling
-
-#### [MODIFY] [.gitignore](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.gitignore)
-- Stop ignoring `assets/app_config.properties` so it can be tracked by Git.
-
-#### [NEW] [app_config.properties](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/assets/app_config.properties)
-- Create a placeholder file with dummy values.
-
-#### [MODIFY] [pubspec.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/pubspec.yaml)
-- Point assets to `assets/app_config.properties`.
-
-#### [MODIFY] [app_config.dart](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/lib/core/config/app_config.dart)
-- Update code to load from `assets/app_config.properties`.
-
-### 2. Android Build Modernization
-
-#### [MODIFY] [settings.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/settings.gradle.kts)
-- Upgrade Kotlin to **2.3.20** and AGP to **9.1.0**.
+### 1. Gradle Properties Cleanup
 
 #### [MODIFY] [gradle.properties](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/gradle.properties)
-- Enable `android.experimental.builtInKotlin=true` and `android.newDsl=false`.
+- Change `android.experimental.builtInKotlin=true` to `android.builtInKotlin=true`.
+- Ensure `android.newDsl=false` is maintained for Flutter compatibility.
 
-#### [MODIFY] [build.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/app/build.gradle.kts) (app level)
-- Switch to Java 17 and remove the manual `kotlin-android` plugin (now handled by built-in Kotlin).
+### 2. Dependency Management
 
-### 3. CI/CD Workflow Alignment
+#### [MODIFY] [settings.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/settings.gradle.kts)
+- Remove `id("org.jetbrains.kotlin.android")` from the `plugins` block. Built-in Kotlin handles this automatically based on the AGP version.
 
-#### [MODIFY] [flutter_ci.yml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.github/workflows/flutter_ci.yml)
-- Update to overwrite the placeholder at `assets/app_config.properties`.
+### 3. Build Script Modernization
 
-#### [MODIFY] [codemagic.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/codemagic.yaml)
-- Update to overwrite the placeholder at `assets/app_config.properties` within a consolidated script block for maximum stability.
+#### [MODIFY] [app/build.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/app/build.gradle.kts)
+- **Remove `kotlinOptions`**: This block is deprecated. With Built-in Kotlin, it's replaced by `compilerOptions`.
+- **Set `compileOptions`**: Ensure `sourceCompatibility` and `targetCompatibility` are set to `JavaVersion.VERSION_17`.
+- **Address `android` block deprecation**: If the `android { }` block still causes an error, I will switch to using the explicit `ApplicationExtension` type configuration.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `flutter analyze` locally.
-- Push to GitHub and monitor the Actions and Codemagic pipelines.
+- Run `flutter analyze` to ensure the project structure is valid.
+- Push to GitHub and monitor the CI/CD pipeline.
 
 ### Manual Verification
-- Check CI logs to confirm `assets/app_config.properties` is overwritten correctly.
+- Check the CI logs to verify that the "assembleRelease" task now proceeds without script compilation errors.

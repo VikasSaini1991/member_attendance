@@ -6,13 +6,9 @@
 - [x] Generate Android Upload Keystore
 - [x] Fix Persistent Asset Bundling Issue (Iteration 3)
 - [x] Fix Codemagic .env Setup (Iteration 4)
-- [/] Re-apply Permanent CI/CD Fixes (Recovery)
-    - [ ] Update `.gitignore` to track `assets/app_config.properties`
-    - [ ] Create placeholder `assets/app_config.properties`
-    - [ ] Update `pubspec.yaml` asset path
-    - [ ] Update `AppConfig` Dart code
-    - [ ] Update `settings.gradle.kts` (Kotlin 2.3.20, AGP 9.1.0)
-    - [ ] Update `gradle.properties` (Built-in Kotlin)
-    - [ ] Update `build.gradle.kts` (Java 17, remove manual KGP)
-    - [ ] Update CI/CD workflows (`flutter_ci.yml`, `codemagic.yaml`)
-    - [ ] Push changes to GitHub
+- [x] Re-apply Permanent CI/CD Fixes (Iteration 5)
+- [/] Fix AGP 9.1 & Kotlin 2.3 Script Compilation Errors (Iteration 6)
+    - [ ] Update `gradle.properties` (Switch to `android.builtInKotlin`)
+    - [ ] Update `settings.gradle.kts` (Remove explicit Kotlin plugin)
+    - [ ] Update `app/build.gradle.kts` (Resolve DSL deprecations)
+    - [ ] Push changes to trigger CI pipeline
