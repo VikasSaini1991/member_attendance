@@ -1,48 +1,59 @@
-# Implementation Plan - Permanent Fix for Asset Bundling & Kotlin Version
+# Implementation Plan - Re-applying Permanent CI/CD Fixes
 
-This plan provides a definitive solution to the "No file or variants found for asset" error and upgrades the Kotlin version to satisfy the latest Flutter requirements.
+This plan re-applies the definitive fixes for asset bundling and toolchain compatibility that were previously reverted. This ensures the CI/CD pipeline remains green and future-proofed.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Placeholder Strategy**: I will be committing a dummy version of `assets/app_config.properties` to your repository.
-> - **Why?**: Flutter's build system requires assets to exist on disk during the initial phases. Creating them on-the-fly in CI is sometimes "too late" for the bundler.
-> - **Security**: The committed file will only contain placeholder values. Your actual secrets will still be injected in CI, overwriting the placeholder.
+> **Placeholder Commitment**: I will be committing a dummy file `assets/app_config.properties` to your repository. This is essential for the Flutter asset bundler to succeed in CI.
 >
 > [!CAUTION]
-> I will remove `assets/app_config.properties` from your `.gitignore` so it can be committed. **Do not put real secrets in this file locally** once this change is made.
+> **Kotlin & Java**: Upgrading to Kotlin `2.3.20` and Java `17` is necessary to satisfy the requirements of the Android Gradle Plugin `9.1.0`. Ensure your local environment is configured with JDK 17.
 
 ## Proposed Changes
 
-### 1. Robust Asset Strategy
+### 1. Asset Bundling (Permanent Fix)
 
 #### [MODIFY] [.gitignore](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.gitignore)
-- Remove `assets/app_config.properties` from the ignored list.
+- Ensure `assets/app_config.properties` is **tracked** (removed from ignore list).
+- Ensure legacy `.env` and `app.env` remain ignored.
 
 #### [NEW] [app_config.properties](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/assets/app_config.properties)
-- Create a file with dummy keys:
-  ```properties
-  ENVIRONMENT_NAME=placeholder
-  BASE_URL=https://placeholder.com
-  API_KEY=placeholder
-  ```
+- Create a file with placeholder values.
 
-### 2. Build Toolchain Modernization
+#### [MODIFY] [pubspec.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/pubspec.yaml)
+- Point asset to `assets/app_config.properties`.
+
+#### [MODIFY] [app_config.dart](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/lib/core/config/app_config.dart)
+- Update code to load from `assets/app_config.properties`.
+
+### 2. Toolchain Upgrades
 
 #### [MODIFY] [settings.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/settings.gradle.kts)
-- Upgrade `org.jetbrains.kotlin.android` to **`2.3.20`** (or the latest stable `2.3.x`).
+- Set Kotlin version to `2.3.20`.
+- Set AGP version to `9.1.0`.
 
-### 3. CI/CD Workflow Cleanup
+#### [MODIFY] [gradle.properties](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/gradle.properties)
+- Enable `android.experimental.builtInKotlin=true`.
+- Set `android.newDsl=false`.
 
-#### [MODIFY] [codemagic.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/codemagic.yaml) & [flutter_ci.yml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.github/workflows/flutter_ci.yml)
-- Ensure the "Overwrite" step happens as early as possible.
-- Remove redundant `mkdir` calls since the file will now exist in the repo.
+#### [MODIFY] [build.gradle.kts](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/android/app/build.gradle.kts)
+- Use Java 17 compatibility.
+- Remove manual `kotlin-android` plugin.
+
+### 3. CI/CD Workflows
+
+#### [MODIFY] [flutter_ci.yml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/.github/workflows/flutter_ci.yml)
+- Update to overwrite `assets/app_config.properties`.
+
+#### [MODIFY] [codemagic.yaml](file:///C:/Users/Acer/AndroidStudioProjects/member_attendance/codemagic.yaml)
+- Update to overwrite `assets/app_config.properties`.
 
 ## Verification Plan
 
 ### Automated Tests
-- I will run `flutter pub get` locally to ensure no errors.
-- Push to GitHub and monitor the [Actions pipeline](https://github.com/VikasSaini1991/member_attendance/actions).
+- Run `flutter pub get` and `flutter analyze` locally.
+- Push to GitHub and monitor results.
 
 ### Manual Verification
-- You should verify that your local build still works (it will use the placeholder unless you manually put your real keys back—be careful not to commit them!).
+- Verify `assets/app_config.properties` exists in the local file system.
