@@ -7,8 +7,9 @@
 - [x] Fix Persistent Asset Bundling Issue (Iteration 3)
 - [x] Fix Codemagic .env Setup (Iteration 4)
 - [x] Re-apply Permanent CI/CD Fixes (Iteration 5)
-- [/] Fix AGP 9.1 & Kotlin 2.3 Script Compilation Errors (Iteration 6)
-    - [ ] Update `gradle.properties` (Switch to `android.builtInKotlin`)
-    - [ ] Update `settings.gradle.kts` (Remove explicit Kotlin plugin)
-    - [ ] Update `app/build.gradle.kts` (Resolve DSL deprecations)
-    - [ ] Push changes to trigger CI pipeline
+- [x] Fix AGP 9.1 & Kotlin 2.3 Script Compilation Errors (Iteration 6)
+- [/] Fix Kotlin Version Mismatch (Iteration 7)
+    - [ ] Update `gradle.properties` (Set `android.builtInKotlin=false`)
+    - [ ] Update `settings.gradle.kts` (Re-add Kotlin plugin 2.3.20)
+    - [ ] Update `app/build.gradle.kts` (Apply `kotlin-android`)
+    - [ ] Push changes to GitHub
